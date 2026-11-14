@@ -2,7 +2,7 @@
 id: t-j0fj
 title: Подключить Фундамент
 type: task
-status: open
+status: in_progress
 priority: 1
 role: executor
 size: m
@@ -11,8 +11,8 @@ blocked_by: []
 from:
 workstream:
 area: [setup]
-assignee:
-claimed:
+assignee: setup-fundament
+claimed: 2026-11-14T21:44:18Z
 due:
 question:
 repeat:
