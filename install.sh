@@ -208,7 +208,7 @@ cat > "$APP/Contents/Info.plist" <<'PLISTEOF'
   <key>CFBundleIdentifier</key><string>com.local.sleeptoggle</string>
   <key>CFBundleExecutable</key><string>SleepToggle</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>2.1</string>
+  <key>CFBundleShortVersionString</key><string>2.2</string>
   <key>LSUIElement</key><true/>
 </dict>
 </plist>
@@ -242,6 +242,8 @@ cat > "$PLIST" <<PLISTEOF
   <key>ProgramArguments</key>
   <array><string>$APP/Contents/MacOS/SleepToggle</string></array>
   <key>RunAtLoad</key><true/>
+  <!-- Restart after a crash; "Quit" from the menu exits 0 and stays closed. -->
+  <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/></dict>
 </dict>
 </plist>
 PLISTEOF
