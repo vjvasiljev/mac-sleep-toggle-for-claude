@@ -1,7 +1,7 @@
 #!/bin/bash
 # SleepToggle: menu bar switch for macOS.
-#   😳 = no sleep (lid closed too), screen never dims, no password lock
-#   💤 = normal macOS behaviour (your previous lock settings restored)
+#   😳 AI mode = no sleep (lid closed too), screen never dims, no password lock
+#   💤 Normal mode = normal macOS behaviour (your previous lock settings restored)
 # Install:   bash install.sh
 # Remove:    bash install.sh --uninstall
 set -euo pipefail
@@ -127,8 +127,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         keepDisplayAwake(sleepDisabled)
         item.button?.title = sleepDisabled ? "😳" : "💤"
         item.button?.toolTip = sleepDisabled
-            ? "Не спит: без сна, экран не гаснет, без пароля"
-            : "Обычный режим macOS"
+            ? "AI mode: без сна, экран не гаснет, без пароля"
+            : "Обычный режим"
     }
 
     @objc func toggle() {
@@ -167,13 +167,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let menu = NSMenu()
         menu.autoenablesItems = false
         let status = NSMenuItem(
-            title: sleepDisabled ? "😳 Не спит, экран не гаснет, без пароля" : "💤 Обычный режим macOS",
+            title: sleepDisabled ? "😳 AI mode: без сна, экран не гаснет, без пароля" : "💤 Обычный режим",
             action: nil, keyEquivalent: "")
         status.isEnabled = false
         menu.addItem(status)
         menu.addItem(.separator())
         let change = NSMenuItem(
-            title: sleepDisabled ? "Вернуть обычный режим" : "Не давать засыпать",
+            title: sleepDisabled ? "Вернуть обычный режим" : "Включить AI mode",
             action: #selector(toggle), keyEquivalent: "")
         change.target = self
         menu.addItem(change)
@@ -208,7 +208,7 @@ cat > "$APP/Contents/Info.plist" <<'PLISTEOF'
   <key>CFBundleIdentifier</key><string>com.local.sleeptoggle</string>
   <key>CFBundleExecutable</key><string>SleepToggle</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>2.2</string>
+  <key>CFBundleShortVersionString</key><string>2.3</string>
   <key>LSUIElement</key><true/>
 </dict>
 </plist>
@@ -249,5 +249,5 @@ cat > "$PLIST" <<PLISTEOF
 PLISTEOF
 launchctl bootstrap "$DOMAIN" "$PLIST"
 
-echo "Готово. 😳 = не спит, экран не гаснет, без пароля. 💤 = обычный режим."
+echo "Готово. 😳 = AI mode (без сна, экран не гаснет, без пароля). 💤 = обычный режим."
 echo "Если сейчас горит 😳, кликни дважды (в 💤 и обратно), чтобы снялась блокировка."

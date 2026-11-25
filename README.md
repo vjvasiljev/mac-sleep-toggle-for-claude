@@ -4,7 +4,7 @@ A tiny macOS menu bar switch. One click and your MacBook keeps working with the 
 
 | Icon | Mode | What happens |
 | --- | --- | --- |
-| 😳 | Awake | No sleep (lid closed too), screen never dims, no password lock |
+| 😳 | AI mode | No sleep (lid closed too), screen never dims, no password lock |
 | 💤 | Normal | Regular macOS behaviour; your previous lock settings are restored |
 
 - **Left click:** switch mode.
@@ -38,11 +38,11 @@ pmset -g assertions | grep SleepToggle
 sysadminctl -screenLock status
 ```
 
-In 😳 you should see `SleepDisabled 1`, a `PreventUserIdleDisplaySleep named: "SleepToggle"` line, and `screenLock is off`.
+In AI mode 😳 you should see `SleepDisabled 1`, a `PreventUserIdleDisplaySleep named: "SleepToggle"` line, and `screenLock is off`.
 
 ## Things to know
 
-- **No password in 😳:** anyone who opens the lid gets in without a password.
+- **No password in AI mode:** anyone who opens the lid gets in without a password.
 - **Heat in a bag:** the Mac doesn't sleep there either, so it can overheat and drain the battery. Switch to 💤 before packing it.
 - **Changed your Mac password?** Run the installer again so the Keychain item matches.
 - **Password visibility:** each switch passes the password to `sysadminctl` as an argument, so it is briefly visible in the process list.
@@ -50,7 +50,7 @@ In 😳 you should see `SleepDisabled 1`, a `PreventUserIdleDisplaySleep named: 
 
 ## По-русски
 
-Значок в строке меню macOS. В режиме 😳 Mac работает и с закрытой крышкой: не засыпает, экран не гаснет, пароль не просит. Режим 💤 возвращает обычное поведение macOS и прежние настройки блокировки. Установка и удаление делаются командами выше, интерфейс виджета на русском.
+Значок в строке меню macOS. В режиме AI mode 😳 Mac работает и с закрытой крышкой: не засыпает, экран не гаснет, пароль не просит. Обычный режим 💤 возвращает обычное поведение macOS и прежние настройки блокировки. Установка и удаление делаются командами выше, интерфейс виджета на русском.
 
 ## License
 
