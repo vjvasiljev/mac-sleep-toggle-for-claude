@@ -22,7 +22,7 @@ stop_app() {
 if [[ "${1:-}" == "--uninstall" ]]; then
   stop_app
   if [[ -f "$SUPPORT/lock" ]]; then
-    echo "Возвращаю прежнюю блокировку экрана (спросит пароль от Mac):"
+    echo "Restoring your previous screen lock (asks for your Mac password):"
     sysadminctl -screenLock "$(cat "$SUPPORT/lock")" -password - || true
   fi
   rm -rf "$APP" "$SUPPORT"
@@ -30,13 +30,13 @@ if [[ "${1:-}" == "--uninstall" ]]; then
   security delete-generic-password -a "$ME" -s SleepToggle >/dev/null 2>&1 || true
   sudo rm -f "$SUDOERS"
   sudo /usr/bin/pmset -a disablesleep 0
-  echo "Удалено. Обычный режим возвращён."
+  echo "Removed. Normal mode restored."
   exit 0
 fi
 
 if ! xcode-select -p >/dev/null 2>&1; then
   xcode-select --install || true
-  echo "Установи Command Line Tools в появившемся окне и запусти этот скрипт ещё раз."
+  echo "Install the Command Line Tools in the window that opened, then run this script again."
   exit 1
 fi
 
@@ -127,8 +127,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         keepDisplayAwake(sleepDisabled)
         item.button?.title = sleepDisabled ? "😳" : "💤"
         item.button?.toolTip = sleepDisabled
-            ? "AI mode: без сна, экран не гаснет, без пароля"
-            : "Обычный режим"
+            ? "AI mode: no sleep, screen stays on, no password"
+            : "Normal mode"
     }
 
     @objc func toggle() {
@@ -167,17 +167,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let menu = NSMenu()
         menu.autoenablesItems = false
         let status = NSMenuItem(
-            title: sleepDisabled ? "😳 AI mode: без сна, экран не гаснет, без пароля" : "💤 Обычный режим",
+            title: sleepDisabled ? "😳 AI mode: no sleep, screen stays on, no password" : "💤 Normal mode",
             action: nil, keyEquivalent: "")
         status.isEnabled = false
         menu.addItem(status)
         menu.addItem(.separator())
         let change = NSMenuItem(
-            title: sleepDisabled ? "Вернуть обычный режим" : "Включить AI mode",
+            title: sleepDisabled ? "Switch to Normal mode" : "Switch to AI mode",
             action: #selector(toggle), keyEquivalent: "")
         change.target = self
         menu.addItem(change)
-        let exit = NSMenuItem(title: "Закрыть виджет", action: #selector(quit), keyEquivalent: "")
+        let exit = NSMenuItem(title: "Quit SleepToggle", action: #selector(quit), keyEquivalent: "")
         exit.target = self
         menu.addItem(exit)
         item.menu = menu
@@ -193,7 +193,7 @@ app.setActivationPolicy(.accessory)
 app.run()
 SWIFT
 
-echo "Компилирую..."
+echo "Compiling..."
 stop_app
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$HOME/Library/LaunchAgents" "$SUPPORT"
@@ -208,7 +208,7 @@ cat > "$APP/Contents/Info.plist" <<'PLISTEOF'
   <key>CFBundleIdentifier</key><string>com.local.sleeptoggle</string>
   <key>CFBundleExecutable</key><string>SleepToggle</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>2.3</string>
+  <key>CFBundleShortVersionString</key><string>2.4</string>
   <key>LSUIElement</key><true/>
 </dict>
 </plist>
@@ -216,7 +216,7 @@ PLISTEOF
 codesign --force --sign - "$APP" >/dev/null 2>&1 || true
 
 # Allows only these two exact pmset commands without a password.
-echo "Сейчас запросит пароль Mac для sudo: один раз, чтобы потом переключать без него."
+echo "Your Mac password for sudo, once, so switching modes never asks again."
 RULE="$WORK/sudoers"
 echo "$ME ALL=(root) NOPASSWD: /usr/bin/pmset -a disablesleep 0, /usr/bin/pmset -a disablesleep 1" > "$RULE"
 /usr/sbin/visudo -cf "$RULE" >/dev/null
@@ -224,10 +224,10 @@ sudo /usr/bin/install -m 440 -o root -g wheel "$RULE" "$SUDOERS"
 
 # macOS changes the screen lock only with the user's password, so keep it in Keychain.
 echo
-read -r -s -p "Ещё раз пароль от Mac (сохранится в Связке ключей, нужен для снятия блокировки экрана): " PW
+read -r -s -p "Your Mac password again (saved in Keychain; macOS needs it to turn the screen lock off): " PW
 echo
 if ! dscl . -authonly "$ME" "$PW" >/dev/null 2>&1; then
-  echo "Неверный пароль. Запусти установщик ещё раз."
+  echo "Wrong password. Run the installer again."
   exit 1
 fi
 security add-generic-password -U -a "$ME" -s SleepToggle -w "$PW"
@@ -249,5 +249,5 @@ cat > "$PLIST" <<PLISTEOF
 PLISTEOF
 launchctl bootstrap "$DOMAIN" "$PLIST"
 
-echo "Готово. 😳 = AI mode (без сна, экран не гаснет, без пароля). 💤 = обычный режим."
-echo "Если сейчас горит 😳, кликни дважды (в 💤 и обратно), чтобы снялась блокировка."
+echo "Done. 😳 = AI mode (no sleep, screen stays on, no password). 💤 = Normal mode."
+echo "If the icon already shows 😳, click it twice (to 💤 and back) to turn the screen lock off."
