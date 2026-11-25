@@ -1,0 +1,2 @@
+stand: python3 tests/stand.py --quick   # полный (60 дней) запускает ревьюер
+bash-syntax: bash -n install.sh
